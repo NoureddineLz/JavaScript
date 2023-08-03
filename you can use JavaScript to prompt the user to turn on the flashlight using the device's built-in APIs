@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flashlight Control</title>
+</head>
+<body>
+    <h1>Flashlight Control</h1>
+    <button onclick="toggleFlashlight()">Turn On Flashlight</button>
+
+    <script>
+        async function toggleFlashlight() {
+            try {
+                // Check if the "MediaDevices" API is available in the browser
+                if ('mediaDevices' in navigator && 'torch' in navigator.mediaDevices) {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                    const track = stream.getVideoTracks()[0];
+                    
+                    // Turn on the flashlight
+                    await track.applyConstraints({ advanced: [{ torch: true }] });
+
+                    // Release the stream and track
+                    track.stop();
+                } else {
+                    // MediaDevices API not available or flashlight not supported
+                    alert('Your device does not support the flashlight feature.');
+                }
+            } catch (error) {
+                // Failed to access the flashlight
+                alert('Failed to access the flashlight. Please make sure you have granted permission to use the camera.');
+            }
+        }
+    </script>
+</body>
+</html>
